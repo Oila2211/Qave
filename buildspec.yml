@@ -27,7 +27,7 @@ phases:
 
       # Copy build files to the backend directory (optional, if needed for deployment)
       - echo "Copying frontend build to backend public folder"
-      - cp -r build ../backend/public
+      # - cp -r build ../backend/public
       - echo "Build and setup complete"
 
 artifacts:
