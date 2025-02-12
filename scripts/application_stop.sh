@@ -1,10 +1,4 @@
 #!/bin/bash
-# Navigate to the backend and frontend directories to start both services
+# Kill any running Node processes (be cautious if multiple Node apps run on the same server)
+pkill -f "node" || true
 
-# Start backend
-cd /home/ec2-user/afriqana/backend
-nohup npm run server & # Starts only the backend
-
-# Start frontend
-cd /home/ec2-user/afriqana/frontend
-nohup npm run client & # Starts the frontend

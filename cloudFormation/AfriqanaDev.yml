@@ -14,10 +14,13 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           sudo yum update -y
-          sudo yum install -y httpd
-          sudo systemctl start httpd
-          sudo systemctl enable httpd
-          echo "Welcome to Afriqana!" > /var/www/html/index.html
+          # Install Node.js (adjust version as needed)
+          curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+          sudo yum install -y nodejs
+          # Optionally disable httpd if it was installed
+          sudo systemctl stop httpd || true
+          sudo systemctl disable httpd || true
+          echo "Node.js installed and httpd disabled"
       Tags:
         - Key: name
           Value: Afriqana # will match the name tag used in codedeploy

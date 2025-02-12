@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2ecb39ed.css",
+    "main.js": "/static/js/main.dd13f989.js",
+    "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
+    "static/media/Afriqana-logo.jpg": "/static/media/Afriqana-logo.af76881661fbde87731c.jpg",
+    "index.html": "/index.html",
+    "main.2ecb39ed.css.map": "/static/css/main.2ecb39ed.css.map",
+    "main.dd13f989.js.map": "/static/js/main.dd13f989.js.map",
+    "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2ecb39ed.css",
+    "static/js/main.dd13f989.js"
+  ]
+}
