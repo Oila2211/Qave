@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { FaCartArrowDown,FaUser} from 'react-icons/fa6';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
-import logo from '../assets/Afriqana-logo.jpg';
+import logo from '../assets/the-qave001.png';
 import { useDispatch,  useSelector } from 'react-redux';
 import { resetOrderValues  } from '../slices/orderSlice';
 
@@ -34,7 +34,8 @@ const Header = () => {
 
   return (
     <header>
-    <Navbar expand="md" bg='purple' variant='dark'  collapseOnSelect>
+    <Navbar expand="md" variant='dark'  
+            collapseOnSelect style={{ background: '#7B5642' }}>
       <Container>
         <LinkContainer to='/'>
         <Navbar.Brand>
@@ -45,7 +46,7 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav " >
           <Nav className="ms-auto">
           <LinkContainer to='/productcatalog'>
-            <Nav.Link>
+            <Nav.Link className='text-white'>
                  Order
             </Nav.Link>
             </LinkContainer>

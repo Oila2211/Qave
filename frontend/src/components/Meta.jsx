@@ -11,7 +11,7 @@ const Meta = ({ title, description, keywords }) => {
 };
 
 Meta.defaultProps = {
-  title: 'Welcome To Afriqana',
+  title: 'Welcome To the Qave by Afriqana',
   description: 'Dine-in or Order online',
   keywords: 'Best west-African styled Resturant in Europe',
 };
