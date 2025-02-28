@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+
+.experience-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .experience-content {
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-content {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .text-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffb25b;
+    /* color: #edebea; */
+  }
+  
+  .text-content p {
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ffd5a4;
+    /* color: #cac3bf; */
+    margin-bottom: 1rem;
+  }
+  
+  .explore-button {
+    padding: 0.75rem 1.5rem;
+    font-family: 'Lato', sans-serif;
+    font-family: 'Lato', sans-serif; /* Button font */
+    font-size: 1rem;
+    color: #3e2a1e; /* Deep brown for text */
+    background-color: #ffc27d; /* White background */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .explore-button:hover {
+    background-color: #F5F5F5; /* Light gray on hover */
+  }
+  
+  .image-content {
+    flex: 1;
+    position: relative;
+  }
+  
+  .image-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .experience-content {
+      flex-direction: column;
+    }
+  
+    .text-content {
+      padding: 1rem;
+    }
+  
+    .image-content {
+      order: -1;
+    }
+  
+    .image-content img {
+      height: 300px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .experience-section {
+      padding: 1rem;
+    }
+  
+    .text-content h2 {
+      font-size: 2rem;
+    }
+  
+    .text-content p {
+      font-size: 0.9rem;
+    }
+  
+    .explore-button {
+      width: 100%;
+    }
+  }

@@ -34,8 +34,8 @@ const Header = () => {
 
   return (
     <header>
-    <Navbar expand="md" variant='dark'  
-            collapseOnSelect style={{ background: '#7B5642' }}>
+    <Navbar expand="lg" variant='dark'  
+            collapseOnSelect style={{ backgroundColor: '#7B5642' }}>
       <Container>
         <LinkContainer to='/'>
         <Navbar.Brand>
@@ -44,20 +44,35 @@ const Header = () => {
         </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav " >
-          <Nav className="ms-auto">
+          <Nav className="ms-auto d-flex gap-3">
           <LinkContainer to='/productcatalog'>
-            <Nav.Link className='text-white'>
+            <Nav.Link className="fs-5">
                  Order
             </Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/member'>
-            <Nav.Link>
-                Member
+            <LinkContainer to='/Menu'>
+            <Nav.Link className="fs-5">
+                Menu
             </Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/catering'>
-            <Nav.Link>
+            <LinkContainer to='/Catering'>
+            <Nav.Link className="fs-5">
                 Catering
+            </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/reserve-table'>
+            <Nav.Link className="fs-5">
+                Reserve Table
+            </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/experience'>
+            <Nav.Link className="fs-5">
+                The Experience
+            </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to='/contact-us'>
+            <Nav.Link className="fs-5">
+                Contact Us
             </Nav.Link>
             </LinkContainer>
             <LinkContainer to='/cart'>
@@ -87,10 +102,10 @@ const Header = () => {
             {userInfo && userInfo.isAdmin && (
               <NavDropdown title='Admin' id='adminmenu'>
                   <LinkContainer to='/admin/productlist'>
-                    <NavDropdown.Item>Products</NavDropdown.Item>
+                    <NavDropdown.Item >Products</NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to='/admin/orderlist'>
-                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                    <NavDropdown.Item >Orders</NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to='/admin/userlist'>
                     <NavDropdown.Item>Users</NavDropdown.Item>

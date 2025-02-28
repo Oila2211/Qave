@@ -1,0 +1,109 @@
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgba(66,40,26,1) 0%, rgba(148,94,62,1) 49%, rgba(163,139,126,1) 97%);
+  }
+  
+.register-row {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+  }
+  
+/* Left Side - Welcome Section */
+.welcome-section {
+    background: linear-gradient(145deg, rgba(66,40,26,1) 0%, rgba(106,67,44,1) 49%, rgba(231,147,105,1) 97%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 80vh;
+    border-radius: 15px 0 0 15px;
+  }
+  
+.welcome-text {
+    max-width: 80%;
+  }
+  
+.welcome-text h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+.welcome-text p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+  
+/* Right Side - Register Form */
+.register-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+  }
+  
+.register-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+.register-btn {
+    width: 100%;
+    background-color: rgb(123, 76, 50);
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  
+.register-btn:hover {
+    background-color: rgb(78, 48, 32);
+  }
+
+/* Google Sign-Up Button */
+.google-btn {
+    width: 100%;
+    background-color: white;
+    color: #444;
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.google-btn svg {
+    color: #db4437; /* Google Red */
+}
+
+.login-link {
+    color: #7c47ff;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-section {
+      display: none;
+    }
+    .register-form-container {
+      width: 100%;
+      justify-content: center;
+    }
+}

@@ -20,7 +20,7 @@ const WhyChooseUs = () => {
           WHY CHOOSE US?
         </h2>
         <p style={{ color: "#ddd", maxWidth: "600px", margin: "10px auto" }}>
-          You will choose us because you get the best quality food from us, and we deliver fast.
+          You wish to taste, feel, explore and experience Africa ? No shaking, We got you covered.
         </p>
 
         {/* Cards Section */}
@@ -43,9 +43,9 @@ const WhyChooseUs = () => {
               <div className="d-flex justify-content-center">
                 <FaHeartbeat size={40} color="#ff8800" /> {/* ✅ Centered & Orange */}
               </div>
-              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Serve Healthy Food</h4>
+              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Serve Healthy West African Cuisine</h4>
               <p style={{ fontSize: "0.95rem", color: "#ddd" }}>
-                We serve all healthy food here. You can choose any food you like.
+                  Bringing the taste of Africa to Stockholm with traditional recipes and rich flavors
               </p>
             </Card>
           </Col>
@@ -68,9 +68,9 @@ const WhyChooseUs = () => {
               <div className="d-flex justify-content-center">
                 <FaStar size={40} color="#ff8800" /> {/* ✅ Centered & Orange */}
               </div>
-              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Best Quality</h4>
+              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Earn Qana Points</h4>
               <p style={{ fontSize: "0.95rem", color: "#ddd" }}>
-                Our food quality is excellent. You will get exactly what you want here.
+                 Get rewarded every time you order! Accumulate points and redeem them for discounts.
               </p>
             </Card>
           </Col>
@@ -93,9 +93,9 @@ const WhyChooseUs = () => {
               <div className="d-flex justify-content-center">
                 <FaShippingFast size={40} color="#ff8800" /> {/* ✅ Centered & Orange */}
               </div>
-              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Fast Delivery</h4>
+              <h4 style={{ fontSize: "1.3rem", marginTop: "15px" }}>Fast Delivery & Dine-In</h4>
               <p style={{ fontSize: "0.95rem", color: "#ddd" }}>
-                You can rely on the main goal of our delivery team to deliver orders quickly.
+                 Enjoy a seamless food experience delivered to your doorstep or in our cozy restaurant.
               </p>
             </Card>
           </Col>

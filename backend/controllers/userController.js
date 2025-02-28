@@ -2,6 +2,9 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import User from '../models/userModel.js';
 import Order from "../models/orderModels.js";
 import generateToken from "../utils/generateToken.js";
+import generateEmailToken from "../utils/generateEmailToken.js";
+import sendEmail from "../utils/email.js"
+import jwt from "jsonwebtoken";
 
 // @desc auth user & get the token
 // @route GET /api/users/login
@@ -11,9 +14,19 @@ const authUser = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    if (!user.verified) {
+        res.status(401);
+        throw new Error("Please verify your email before logging in.")
+    }
+
     if (user && (await user.matchPassword(password))) {
+        // Check if user is verified
+        if (!user.verified) {
+            res.status(401)
+            throw new Error('Please verify your email before logging in..')
+        }
+        // Generate tokrn and log user in
         generateToken(res, user._id)
-        // console.log("Token generated and set:", token)
 
         res.json({
             _id: user._id,
@@ -50,13 +63,29 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if (user) {
-        generateToken(res, user._id);
+
+        // Generate email verification token
+        const emailToken = generateEmailToken(user._id);
+
+        // Save token to the user
+        user.verificationToken = emailToken;
+        user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
+        await user.save();
+
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${emailToken}`;
+        const emailText = `Please verify your email by clicking the link: ${verificationUrl}`;
+
+        await sendEmail(user.email, "Verify Your Email", emailText);        
+
+        // Generate authentication token (For immediate login after registration)
+        // generateToken(res, user._id);
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
-            // qanaPoints: user.qanaPoints,
             isAdmin: user.isAdmin,
+            message: "Verification email sent. Please check your email to verify your account"
         });
         
     }  else {
@@ -65,12 +94,129 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
+
+// @desc    Verify user email
+// @route   GET /api/users/verify-email
+// @access  Public
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { token } = req.query;
+
+    if (!token || typeof token !== 'string') {
+        res.status(400);
+        throw new Error('Token is required and must be a valid string');
+    }
+
+
+    if (!token) {
+        res.status(400);
+        throw new Error('Token is required');
+    }
+
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Find the user by ID and check if the token matches
+        const user = await User.findOne({
+            _id: decoded.userId,
+            // verificationToken: token,
+            verificationTokenExpires: { $gt: Date.now() }, // Check if the token is not expired
+        });
+
+        if (!user) {
+            res.status(400);
+            throw new Error('Invalid or expired token');
+        }
+
+        if (user.verified) {
+            return res.status(200).json({ message: 'Email already verified. You can log in now.' });
+        }
+
+        // Mark the user as verified
+        user.verified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ message: 'Email verified successfully. You can now log in' });
+    } catch (error) {
+        res.status(400);
+        throw new Error('Email verification failed');
+    }
+});
+
+
+
+
+// @desc    Forgot Password
+// @route   GET /api/users/forgot-password
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found.");
+    }
+
+    // Generate reset token
+    const resetToken = user.generateResetToken();
+    await user.save(); // ✅ Save token in the database
+
+    // Create reset link
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    // Email content
+    const message = `You requested a password reset. Click the link below to reset your password:
+    ${resetUrl} 
+    This link is valid for 1 hour.`;
+
+    // Send email
+    await sendEmail(user.email, "Password Reset Request", message);
+
+    res.status(200).json({ message: "Password reset email sent. Check your inbox." });
+});
+
+
+
+// @desc    Reset Password
+// @route   POST /api/users/forgot-password
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    console.log("Received reset token:", token);
+    console.log("Token:", token);
+    console.log("New Password:", password);
+    
+    const user = await User.findOne({
+        resetToken: token,
+        resetTokenExpires: { $gt: Date.now() }, // Ensure token is still valid
+    });
+
+    if (!user) {
+        res.status(400);
+        throw new Error("Invalid or expired token.");
+    }
+
+    // Update password
+    user.password = password;
+    user.resetToken = undefined;
+    user.resetTokenExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful. You can now log in." });
+});
+
+
+
 // @desc Logout user / clear cookie
 // @route POST /api/users/logout
 // @access Private
 
 const logoutUser = asyncHandler(async (req, res) => {
-    console.log("logout user called")
     res.cookie('jwt', '', {
         httpOnly: true,
         expires: new Date(0) // electively deleting the new cookie
@@ -163,7 +309,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error('User not found')
     }
-    console.log('user new details:', user)
 });
 
 
@@ -268,6 +413,9 @@ const updateUser = asyncHandler(async (req, res) => {
 export {
     authUser,
     registerUser,
+    verifyEmail,
+    forgotPassword,
+    resetPassword,
     logoutUser,
     getUserProfile,
     updateUserProfile,

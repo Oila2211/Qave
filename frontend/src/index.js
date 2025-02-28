@@ -20,6 +20,9 @@ import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import VerifyEmailScreen from './screens/VeryEmailScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import DeliveryScreen from './screens/DeliveryScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
@@ -35,6 +38,8 @@ import CouponEditScreen from './screens/admin/CouponEditScreen';
 import CouponListScreen from './screens/admin/CouponListScreen';
 import RegionEditScreen from './screens/admin/RegionPriceEditScreen';
 import RegionListScreen from './screens/admin/RegionListScreen';
+import ContactScreen from './screens/ContactScreen';
+import AboutScreen from './screens/AboutScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +51,11 @@ const router = createBrowserRouter(
       <Route path='/cart' element={<CartScreen />} />
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
+      <Route path='/verify-email' element={<VerifyEmailScreen />} />
+      <Route path='/forgot-password' element={<ForgotPasswordScreen />} />
+      <Route path='/reset-password' element={<ResetPasswordScreen />} />
+      <Route path='/contact-us' element={<ContactScreen />} />
+      <Route path='/about-us' element={<AboutScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/delivery' element={<DeliveryScreen />} />
@@ -77,13 +87,13 @@ const router = createBrowserRouter(
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <StripeProvider>
         <RouterProvider router={router} />
       </StripeProvider>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode> 
 );
 
 

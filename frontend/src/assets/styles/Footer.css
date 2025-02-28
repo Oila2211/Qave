@@ -1,0 +1,83 @@
+.footer {
+    background: #1a1a1a;
+    color: white;
+    padding: 40px 0;
+    font-size: 0.95rem;
+  }
+  
+  .footer-logo {
+    width: 120px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-description {
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-links li {
+    margin-bottom: 8px;
+  }
+  
+  .footer-links a {
+    color: #ffd700;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .footer-links a:hover {
+    color: #ffbb00;
+  }
+  
+  .social-icons a {
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 10px;
+  }
+  
+  .footer-hours h5,
+  .footer-bottom h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .payment-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .payment-icons svg {
+    margin: 0 10px;
+  }
+  
+  .footer-copyright {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+  
+  /* ✅ Make Footer Responsive */
+  @media (max-width: 768px) {
+    .footer-links {
+      text-align: center;
+    }
+  
+    .footer-bottom {
+      text-align: center;
+    }
+  }
+
+  .payment-icons {
+    display: flex;
+    justify-content: center; /* ✅ Centers the icons horizontally */
+    align-items: center;
+    gap: 15px; /* ✅ Adds spacing between icons */
+    margin-top: 10px; /* ✅ Ensures proper spacing from "We Accept" */
+  }
+  
+  

@@ -15,7 +15,6 @@ console.log("Mongoose is:", mongoose)
 // @access Private
 const addOrderItems = asyncHandler(async (req, res) => {
     try {
-        console.log("Order data received in controller:", req.body);
 
         const { orderItems, deliveryAddress, phoneNumber, paymentMethod, itemsPrice, taxPrice, totalPrice } = req.body;
 
@@ -25,7 +24,6 @@ const addOrderItems = asyncHandler(async (req, res) => {
         }
 
         const { longitude, latitude } = deliveryAddress;
-        console.log("Longitude and latitude:", longitude, latitude );
 
         const region = await Region.aggregate([
             {
@@ -87,18 +85,6 @@ const addOrderItems = asyncHandler(async (req, res) => {
             taxPrice,
             deliveryPrice,
             totalPrice: calculatedTotalPrice,
-        });
-
-        console.log("Order to be created:", {
-            orderItems, 
-            user: req.user._id,
-            deliveryAddress,
-            phoneNumber,
-            paymentMethod,
-            itemsPrice,
-            taxPrice,
-            deliveryPrice,
-            totalPrice: calculatedTotalPrice
         });
         
 
@@ -177,78 +163,59 @@ const createStripePaymentIntent = asyncHandler(async (req, res) => {
 
 
 
-
-
 const updateOrderToPaid = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     const { id, status, update_time, email_address, couponCode } = req.body;
-
-    console.log("Request body:", req.body);
 
     if (!id || !status || !update_time || !email_address) {
         return res.status(400).send('Missing required fields in request body.');
     }
 
     if (order) {
-        console.log("Order found:", order);
-
-        if (!couponCode) {
-            console.log("couponCode is not present or is null.");
-        } else {
-            console.log("couponCode is present:", couponCode);
-
+        if (couponCode) {
             const coupon = await Coupon.findOne({ code: couponCode });
-            if (!coupon) {
-                console.log("No coupon found with code:", couponCode);
-            } else {
-                console.log("Coupon found:", coupon);
+            if (coupon) {
                 const userIdString = order.user.toString();
-                console.log("Checking if user:", userIdString, "has already redeemed this coupon.");
                 if (!coupon.usersRedeemed.some(userId => userId.toString() === userIdString)) {
-                    console.log("User has not redeemed this coupon yet. Adding user to usersRedeemed.");
                     coupon.usersRedeemed.push(order.user);
                     await coupon.save();
-                    console.log("Updated coupon after adding user:", coupon);
-                } else {
-                    console.log("User has already redeemed this coupon.");
                 }
             }
         }
 
         try {
-            // Use updateOne method for direct database update
-            await Order.updateOne({ _id: req.params.id }, { $set: { 
-                isPaid: true, 
-                paidAt: Date.now(), 
-                paymentResults: {
-                    id: req.body.id,
-                    status: req.body.status,
-                    update_time: req.body.update_time,
-                    email_address: req.body.email_address
-                } 
-            }});
+            await Order.updateOne({ _id: req.params.id }, { 
+                $set: { 
+                    isPaid: true, 
+                    paidAt: Date.now(), 
+                    paymentResults: {
+                        id: req.body.id,
+                        status: req.body.status,
+                        update_time: req.body.update_time,
+                        email_address: req.body.email_address
+                    } 
+                }
+            });
 
             const user = await User.findById(order.user);
             if (user) {
                 if (order.redeemedPoints) {
-                    user.qanaPoints = user.qanaPoints - order.redeemedPoints;
+                    user.qanaPoints -= order.redeemedPoints;
                 }
-                user.qanaPoints = user.qanaPoints + order.totalPrice;
+                user.qanaPoints += order.totalPrice;
                 await user.save();
-                console.log("my qana points:", user.qanaPoints);
             }
 
             const updatedOrder = await Order.findById(req.params.id);
             if (updatedOrder) {
                 res.status(200).json({
-                    updatedOrder: updatedOrder,
+                    updatedOrder,
                     updatedUser: user,
                 });
             } else {
                 res.status(500).send('Failed to fetch updated order');
             }
         } catch (error) {
-            console.error(`Error in updating order ${req.params.id} to paid:`, error.message);
             res.status(500).send('Server Error');
         }
     } else {

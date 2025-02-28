@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+.hero-text-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay for better text readability */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-the {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    color: #ffd7a9;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+.hero-qave {
+    font-family: 'Great Vibes', cursive;
+    font-size: 5rem;
+    font-weight: 700;
+    color: #ffb25b;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-left: 6px;
+    display: block;
+    text-align: center; 
+}
+
+
+.hero-by {
+    font-family: 'Poppins', sans-serif;
+    color: #ffd7a9;
+    font-size: 1.2rem;
+    font-weight: 400;
+    text-transform: lowercase;
+    margin-left: 20px;
+    /* display: block; */
+    /* text-align: center;  */
+}
+
+.hero-afriqana {
+    font-family: 'Playfair Display', serif;
+    color: #febe74;
+    font-size: 2.2rem;
+    font-weight: 300;
+    text-transform: capitalize;
+    margin-left: 6px;
+    /* display: block;
+    text-align: center;  */
+}
+
+.hero-subtitle {
+  font-family: 'Poppins', sans-serif;
+  color: #ffd5a4;
+  font-size: 1.2rem;
+  font-weight: 400;
+  display: block;
+  text-align: center; 
+}

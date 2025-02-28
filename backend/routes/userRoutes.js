@@ -3,7 +3,10 @@ const router = express.Router();
 import { 
     authUser,
     registerUser,
+    verifyEmail,
     logoutUser,
+    forgotPassword,
+    resetPassword,
     getUserProfile,
     updateUserProfile,
     redeemQanaPoints,
@@ -17,6 +20,9 @@ import { admin, protect } from "../middleware/authMiddleware.js";
 
 // remember all these re connected to '/api/users/'
 router.route('/').post(registerUser).get(protect, admin, getUsers);
+router.get('/verify-email', verifyEmail);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 router.post('/logout', logoutUser);
 router.post('/login', authUser);
 router.post('/redeem', protect, redeemQanaPoints)
