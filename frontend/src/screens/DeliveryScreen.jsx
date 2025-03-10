@@ -1,12 +1,12 @@
-
-
 import { useState, useRef, useEffect } from "react"
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { useUpdateUserMutation } from "../slices/usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
-import { saveDeliveryAddress } from "../slices/cartSlice";
+import { saveDeliveryAddress, savePhoneNumber } from "../slices/cartSlice";
 import CheckoutSteps from "../components/CheckoutSteps";
+import { toast } from 'react-toastify';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { useJsApiLoader, StandaloneSearchBox } from "@react-google-maps/api";
 
@@ -21,14 +21,14 @@ const DeliveryScreen = () => {
     });
 
     const cart = useSelector((state) => state.cart);
-    const { deliveryAddress } = cart;
-
+    const { userInfo } = useSelector((state) => state.auth)
+    const { deliveryAddress, phoneNumber } = cart; 
     const [address, setAddress] = useState(deliveryAddress?.address || '');
     const [longitude, setLongitude] = useState(deliveryAddress?.longitude || '');
-    const [latitude, setLatitude] = useState(deliveryAddress?.latitude || '');
+    const [latitude, setLatitude] = useState(deliveryAddress?.latitude || ''); 
 
 
-    const [phoneNumber, setPhoneNumber] = useState(deliveryAddress?.phoneNumber || '')
+    const [phone, setPhone] = useState(phoneNumber || userInfo?.phoneNumber || '');
 
     const navigate = useNavigate();
     const dispatch = useDispatch()
@@ -54,17 +54,29 @@ const DeliveryScreen = () => {
 
 
 
-
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        console.log("Submitting delivery address", {address, phoneNumber})
-        dispatch(saveDeliveryAddress({
-            address,
-            longitude, 
-            latitude,
-            phoneNumber
-        }));
-        navigate('/placeorder')
+
+        try {
+            // // Update the user's phone number in the database
+            // await updateUser({
+            //     userId: userInfo._id, // Assuming userInfo is available from Redux
+            //     phoneNumber: phoneNumber,
+            // }).unwrap();
+
+            // Save delivery address and phone number to Redux
+            dispatch(saveDeliveryAddress({
+                address,
+                longitude,
+                latitude,
+            }));
+            dispatch(savePhoneNumber(phone));
+
+            toast.success('Phone number updated successfully');
+            navigate('/placeorder');
+        } catch (err) {
+            toast.error(err?.data?.message || 'Failed to update phone number');
+        }
     };
 
     if (!isLoaded) {
@@ -97,7 +109,7 @@ const DeliveryScreen = () => {
                 type="number"
                 placeholder="Enter Phone Number"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => setPhone(e.target.value)}
             ></Form.Control>
         </Form.Group>
 
@@ -111,4 +123,3 @@ const DeliveryScreen = () => {
 }
 
 export default DeliveryScreen
-

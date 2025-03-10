@@ -16,6 +16,7 @@ import { setCredentials } from '../slices/authSlice';
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updateProfile, {isLoading: loadingUpdateProfile}] = useProfileMutation();
@@ -31,6 +32,7 @@ const ProfileScreen = () => {
     if (userInfo) { 
       setName(userInfo.name)
       setEmail(userInfo.email)
+      setPhoneNumber(userInfo.phoneNumber || "");
     }
   }, [userInfo, userInfo.name, userInfo.email])
 
@@ -46,7 +48,7 @@ const ProfileScreen = () => {
     } else {
       try {
         const res = await updateProfile({ _id:userInfo._id, 
-          name, email, password }).unwrap();
+          name, email, password, phoneNumber }).unwrap();
           dispatch(setCredentials(res))
           toast.success('Profile updated successfully')
       } catch (err) {
@@ -79,6 +81,16 @@ const ProfileScreen = () => {
               placeholder='Enter email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group className='my-2' controlId='phoneNumber'>
+            <Form.Label>Phone Number</Form.Label>
+            <Form.Control
+                type='text'
+                placeholder='Enter phone number'
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
             ></Form.Control>
           </Form.Group>
 

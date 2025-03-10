@@ -5,7 +5,8 @@ const initialState = localStorage.getItem("cart") ?
     JSON.parse(localStorage.getItem("cart"))
      : { 
         cartItems: [], 
-        deliveryAddress: {}, 
+        deliveryAddress: { },
+        phoneNumber: "", 
         paymentMethod: 'Stripe', 
         orderId: null,
     };
@@ -40,11 +41,10 @@ const cartSlice = createSlice({
                ...state.deliveryAddress,
                address: action.payload.address,
                longitude: action.payload.longitude,
-               latitude: action.payload.latitude,
+               latitude: action.payload.latitude, 
 
             //    ...action.payload, 
             };
-            state.phoneNumber = action.payload.phoneNumber;
             return updateCart(state);
         },
         
@@ -56,6 +56,11 @@ const cartSlice = createSlice({
             state.cartItems = [];
             return updateCart(state);
         },
+        savePhoneNumber: (state, action) => {
+            console.log("📌 Updating Phone Number in Redux:", action.payload);
+            state.phoneNumber = action.payload; 
+            return updateCart(state);
+        },
 
     },
 });
@@ -64,6 +69,7 @@ export const {
     addToCart,
     removeFromCart, 
     saveDeliveryAddress,
+    savePhoneNumber,
     savePaymentMethod, 
     clearCartItems, 
 } = cartSlice.actions;
