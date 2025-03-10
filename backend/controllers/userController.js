@@ -190,7 +190,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     console.log("Received reset token:", token);
     console.log("Token:", token);
     console.log("New Password:", password);
-    
+
     const user = await User.findOne({
         resetToken: token,
         resetTokenExpires: { $gt: Date.now() }, // Ensure token is still valid
@@ -322,6 +322,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
+        user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
 
         if (req.body.password) {
             user.password = req.body.password;
@@ -333,6 +334,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
+            phoneNumber: updatedUser.phoneNumber,
             isAdmin: updatedUser.isAdmin,
         })
     } else {

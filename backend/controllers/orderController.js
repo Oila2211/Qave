@@ -8,7 +8,6 @@ import Coupon from "../models/couponModel.js";
 import Region from "../models/regionModels.js";
 import Stripe from "stripe";
 
-console.log("Mongoose is:", mongoose)
 
 // @desc Create new orders
 // @route POST /api/orders
@@ -22,6 +21,24 @@ const addOrderItems = asyncHandler(async (req, res) => {
             res.status(400).json({ error: 'No order items' });
             throw new Error('No order items');
         }
+        if (!deliveryAddress || !phoneNumber) {
+            return res.status(400).json({ error: "Delivery address and phone number are required" });
+        }
+
+        console.log("✔ Order Data Validated");
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(400).json({ error: "User not found" });
+        }
+
+        // ✅ Update user's phone number if changed
+        if (user.phoneNumber !== phoneNumber) {
+            user.phoneNumber = phoneNumber;
+            await user.save();
+            console.log("✔ Phone number updated for user");
+        }
+
 
         const { longitude, latitude } = deliveryAddress;
 
@@ -70,6 +87,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
             Number(taxPrice) +
             Number(deliveryPrice)
         ).toFixed(2);
+
 
         const order = new Order({
             orderItems: orderItems.map((x) => ({
