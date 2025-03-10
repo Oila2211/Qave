@@ -16,8 +16,8 @@ const DeliveryScreen = () => {
 
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: process.env.REACT_APP_GOOGLEMAPS_API_KEY, // Store your API key in .env
-        libraries: ["places"],
+        googleMapsApiKey: process.env.REACT_APP_GOOGLEMAPS_API_KEY, 
+        libraries,
     });
 
     const cart = useSelector((state) => state.cart);
@@ -108,7 +108,7 @@ const DeliveryScreen = () => {
             <Form.Control
                 type="number"
                 placeholder="Enter Phone Number"
-                value={phoneNumber}
+                value={phone}
                 onChange={(e) => setPhone(e.target.value)}
             ></Form.Control>
         </Form.Group>
