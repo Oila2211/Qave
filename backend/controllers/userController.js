@@ -14,19 +14,29 @@ const authUser = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user.verified) {
+    if (!user) {
         res.status(401);
-        throw new Error("Please verify your email before logging in.")
+        throw new Error("Invalid email or password");
     }
 
-    if (user && (await user.matchPassword(password))) {
-        // Check if user is verified
-        if (!user.verified) {
-            res.status(401)
-            throw new Error('Please verify your email before logging in..')
-        }
-        // Generate tokrn and log user in
-        generateToken(res, user._id)
+    // ✅ First, check if the user is an old customer
+    if (user.oldUser) {
+        return res.status(428).json({
+            message: "System updated! Please reset your password to continue.",
+            requiresReset: true,
+            email: user.email,
+        });
+    }
+
+    // ✅ Then, check if email is verified
+    if (!user.verified) {
+        res.status(401);
+        throw new Error("Please verify your email before logging in.");
+    }
+
+    // ✅ Finally, check the password for normal login
+    if (await user.matchPassword(password)) {
+        generateToken(res, user._id);
 
         res.json({
             _id: user._id,
@@ -34,14 +44,14 @@ const authUser = asyncHandler(async (req, res) => {
             email: user.email,
             qanaPoints: user.qanaPoints,
             isAdmin: user.isAdmin,
-            
-        })
+        });
     } else {
         res.status(401);
-        throw new Error('Invalid email or password')
+        throw new Error("Invalid email or password");
     }
-
 });
+
+
 
 // @desc Register new user
 // @route POST /api/users/login
@@ -205,6 +215,18 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.password = password;
     user.resetToken = undefined;
     user.resetTokenExpires = undefined;
+
+    // If user was not verified, mark as verified
+    if (!user.verified) {
+        user.verified = true;
+    }
+
+    // If user was an old Wix user, mark them as a regular user
+    if (user.oldUser) {
+        user.oldUser = false;
+    }
+
+
     await user.save();
 
     res.status(200).json({ message: "Password reset successful. You can now log in." });

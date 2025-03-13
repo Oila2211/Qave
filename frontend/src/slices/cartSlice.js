@@ -6,7 +6,8 @@ const initialState = localStorage.getItem("cart") ?
      : { 
         cartItems: [], 
         deliveryAddress: { },
-        phoneNumber: "", 
+        phoneNumber: "",
+        orderType: "",  
         paymentMethod: 'Stripe', 
         orderId: null,
     };
@@ -36,15 +37,21 @@ const cartSlice = createSlice({
 
             return updateCart(state)
         },
+        setOrderType: (state, action) => {
+            state.orderType = action.payload;
+            return updateCart(state);
+        },
         saveDeliveryAddress: (state, action) => {
-            state.deliveryAddress = { 
-               ...state.deliveryAddress,
-               address: action.payload.address,
-               longitude: action.payload.longitude,
-               latitude: action.payload.latitude, 
-
-            //    ...action.payload, 
-            };
+            if (state.orderType === "delivery") {
+                state.deliveryAddress = { 
+                    address: action.payload.address,
+                    longitude: action.payload.longitude,
+                    latitude: action.payload.latitude
+                };
+            } else {
+                // If orderType is "pickup", clear the deliveryAddress
+                state.deliveryAddress = {};
+            }
             return updateCart(state);
         },
         
@@ -59,7 +66,6 @@ const cartSlice = createSlice({
         savePhoneNumber: (state, action) => {
             console.log("📌 Updating Phone Number in Redux:", action.payload);
             state.phoneNumber = action.payload; 
-            return updateCart(state);
         },
 
     },
@@ -67,7 +73,8 @@ const cartSlice = createSlice({
 
 export const { 
     addToCart,
-    removeFromCart, 
+    removeFromCart,
+    setOrderType, 
     saveDeliveryAddress,
     savePhoneNumber,
     savePaymentMethod, 

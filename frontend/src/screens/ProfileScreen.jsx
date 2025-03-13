@@ -16,7 +16,8 @@ import { setCredentials } from '../slices/authSlice';
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || "");
+  const { userInfo } = useSelector((state) => state.auth)
+  // const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updateProfile, {isLoading: loadingUpdateProfile}] = useProfileMutation();
@@ -24,15 +25,13 @@ const ProfileScreen = () => {
 
   const dispatch = useDispatch();
 
-  const { userInfo } = useSelector((state) => state.auth)
-
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
   useEffect(() => {
     if (userInfo) { 
       setName(userInfo.name)
       setEmail(userInfo.email)
-      setPhoneNumber(userInfo.phoneNumber || "");
+      // setPhoneNumber(userInfo.phoneNumber || "");
     }
   }, [userInfo, userInfo.name, userInfo.email])
 
@@ -48,7 +47,7 @@ const ProfileScreen = () => {
     } else {
       try {
         const res = await updateProfile({ _id:userInfo._id, 
-          name, email, password, phoneNumber }).unwrap();
+          name, email, password, }).unwrap();
           dispatch(setCredentials(res))
           toast.success('Profile updated successfully')
       } catch (err) {
@@ -84,7 +83,7 @@ const ProfileScreen = () => {
             ></Form.Control>
           </Form.Group>
 
-          <Form.Group className='my-2' controlId='phoneNumber'>
+          {/* <Form.Group className='my-2' controlId='phoneNumber'>
             <Form.Label>Phone Number</Form.Label>
             <Form.Control
                 type='text'
@@ -92,7 +91,7 @@ const ProfileScreen = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
             ></Form.Control>
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group className='my-2' controlId='password'>
             <Form.Label>Password</Form.Label>

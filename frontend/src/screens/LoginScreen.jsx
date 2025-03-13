@@ -89,13 +89,12 @@
 
 
 
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Container, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/usersApiSlice";
-import { setCredentials } from "../slices/authSlice";
+import { setCredentials, logout } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import "../assets/styles/Login.css"; 
@@ -121,16 +120,35 @@ const LoginScreen = () => {
     }
   }, [navigate, redirect, userInfo]);
 
+
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate(redirect);
+        const res = await login({ email, password }).unwrap();
+
+        // Check if the user is an old user (requiresReset flag)
+        if (res.requiresReset) {
+            console.log("Old user detected, redirecting to reset page...");
+            navigate("/reset-old-user", { state: { email } }); // Redirect old users to reset password page
+        } else {
+            // Normal login for non-old users
+            dispatch(setCredentials(res));
+            navigate("/");
+        }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+        console.log("Login error response:", err?.data);
+
+        if (err?.status === 428 && err?.data?.requiresReset) {
+            console.log("Old user detected, redirecting to reset page...");
+            navigate("/reset-old-user", { state: { email } }); // Redirect old users to reset password page
+        } else {
+            toast.error(err?.data?.message || "Login failed.");
+        }
     }
-  };
+};
+
+
 
   return (
     <Container fluid className="login-container">

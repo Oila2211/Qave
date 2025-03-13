@@ -12,11 +12,11 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setCredentials: (state, action) => {
-            state.userInfo = action.payload;
-            localStorage.setItem('userInfo', JSON.stringify(action.payload))
+            state.userInfo = action.payload; // Replace userInfo instead of merging
+            localStorage.setItem('userInfo', JSON.stringify(action.payload));
         },
         updateUserInfoAfterPayment: (state, action) => {
-            // It will merge the new user data with the current one
+            // this merge the new user data with the current one
             state.userInfo = { ...state.userInfo, ...action.payload };
             localStorage.setItem('userInfo', JSON.stringify({ ...state.userInfo, ...action.payload }))
         },

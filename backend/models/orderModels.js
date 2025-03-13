@@ -7,6 +7,11 @@ const orderSchema = mongoose.Schema({
         required: true,
         ref: "User"
     },
+    orderType: {  
+        type: String,
+        required: true,
+        enum: ["delivery", "pickup"],
+    },
     
     orderItems: [
         {
@@ -22,10 +27,10 @@ const orderSchema = mongoose.Schema({
         }
     ],
     deliveryAddress: {
-        address: { type: String, required: true},
-        longitude: { type: Number, required: true },
-        longitude: { type: Number, required: true },
-        floorAndDoor: { type: String, required: false},
+        address: { type: String },
+        longitude: { type: Number },
+        longitude: { type: Number },
+        floorAndDoor: { type: String },
     },
     phoneNumber: {
         type: String,

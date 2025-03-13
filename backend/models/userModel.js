@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false, // field for email verification
     },
+    oldUser: {
+        type: Boolean,
+        default: false, // old customers from wix site
+    },
     verificationToken: String, // Token for email verification
     verificationTokenExpires: Date, // Expiry for the token
     resetToken: String,

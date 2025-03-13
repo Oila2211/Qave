@@ -14,15 +14,21 @@ import Stripe from "stripe";
 // @access Private
 const addOrderItems = asyncHandler(async (req, res) => {
     try {
-
-        const { orderItems, deliveryAddress, phoneNumber, paymentMethod, itemsPrice, taxPrice, totalPrice } = req.body;
+        const { orderItems, orderType, deliveryAddress, phoneNumber, paymentMethod, itemsPrice, taxPrice } = req.body;
 
         if (!orderItems || orderItems.length === 0) {
             res.status(400).json({ error: 'No order items' });
             throw new Error('No order items');
         }
-        if (!deliveryAddress || !phoneNumber) {
-            return res.status(400).json({ error: "Delivery address and phone number are required" });
+
+        if (!orderType) {  // ✅ Fix: Only throw error if orderType is missing
+            res.status(400);
+            throw new Error("Please select Pickup or Delivery");
+        }
+
+        if (orderType === "delivery" && (!deliveryAddress || !deliveryAddress.address)) {
+            res.status(400);
+            throw new Error("Delivery address is required for delivery orders");
         }
 
         console.log("✔ Order Data Validated");
@@ -39,81 +45,80 @@ const addOrderItems = asyncHandler(async (req, res) => {
             console.log("✔ Phone number updated for user");
         }
 
+        let deliveryPrice = 0; // Default deliveryPrice to 0 for pickup orders
 
-        const { longitude, latitude } = deliveryAddress;
-
-        const region = await Region.aggregate([
-            {
-                $geoNear: {
-                    near: { type: "Point", coordinates: [longitude, latitude] },
-                    distanceField: "distanceToCenter",
-                    maxDistance: 25000,
-                    spherical: true,
+        if (orderType === "delivery") {
+            const { longitude, latitude } = deliveryAddress;
+            const region = await Region.aggregate([
+                {
+                    $geoNear: {
+                        near: { type: "Point", coordinates: [longitude, latitude] },
+                        distanceField: "distanceToCenter",
+                        maxDistance: 25000,
+                        spherical: true,
+                    },
                 },
-            },
-            { $limit: 1 }, 
-        ]);
+                { $limit: 1 },
+            ]);
 
-        if (!region.length) {
-            res.status(400).json({ error: 'Delivery not available for this location' });
-            throw new Error('Delivery not available for this location');
+            if (!region.length) {
+                res.status(400).json({ error: 'Delivery not available for this location' });
+                throw new Error('Delivery not available for this location');
+            }
+
+            const selectedRegion = region[0];
+            deliveryPrice = selectedRegion.baseDeliveryPrice;
+
+            // Calculate extra charge for long distances
+            const distanceToCenter = selectedRegion.distanceToCenter;
+            if (distanceToCenter > selectedRegion.maxDistance) {
+                const extraDistance = distanceToCenter - selectedRegion.maxDistance;
+                const extraCharge = (extraDistance / 1000) * selectedRegion.extraChargePerKm;
+                deliveryPrice += extraCharge;
+            }
+
+            // Round deliveryPrice
+            deliveryPrice = parseFloat(deliveryPrice.toFixed(2));
         }
 
-        const selectedRegion = region[0];
-
-        let deliveryPrice = selectedRegion.baseDeliveryPrice;
-
-        // Calculate the distance to the delivery location (in meters)
-        const distanceToCenter = selectedRegion.distanceToCenter;
-
-
-        if (distanceToCenter > selectedRegion.maxDistance) {
-            const extraDistance = distanceToCenter - selectedRegion.maxDistance; // Extra distance in meters
-
-            const extraCharge = ( extraDistance / 1000 ) * selectedRegion.extraChargePerKm; // Convert to km
-
-            deliveryPrice += extraCharge;
-        } else {
-            console.log (" No extra charge applied. Distance is within the max distance.")
-        }
-
-
-        // Round the deliveryPrice to two decimal places
-        deliveryPrice = parseFloat(deliveryPrice.toFixed(2));
-
-
+        // ✅ Fix: Ensure totalPrice correctly handles pickup orders
         const calculatedTotalPrice = (
-            Number(itemsPrice) +
-            Number(taxPrice) +
-            Number(deliveryPrice)
+            parseFloat(itemsPrice) +
+            parseFloat(taxPrice) +
+            (orderType === "pickup" ? 0 : parseFloat(deliveryPrice))  // ✅ Set deliveryPrice to 0 for pickup
         ).toFixed(2);
 
+        // ✅ Fix: Ensure product is mapped correctly in orderItems
+        const processedOrderItems = orderItems.map((x) => ({
+            ...x,
+            product: x._id, // ✅ Ensures MongoDB has a product reference
+            _id: undefined
+        }));
+        
 
         const order = new Order({
-            orderItems: orderItems.map((x) => ({
-                ...x,
-                product: x._id,
-                _id: undefined
-            })),
+            orderItems: processedOrderItems,
+            orderType,
             user: req.user._id,
-            deliveryAddress,
+            deliveryAddress: orderType === "delivery" ? deliveryAddress : undefined,
             phoneNumber,
             paymentMethod,
             itemsPrice,
             taxPrice,
-            deliveryPrice,
+            deliveryPrice: orderType === "pickup" ? 0 : deliveryPrice, // ✅ Ensures 0 for pickup
             totalPrice: calculatedTotalPrice,
         });
-        
 
         const createdOrder = await order.save();
 
         const potentialQanaPoints = calculatedTotalPrice;
         res.status(201).json({ createdOrder, potentialQanaPoints });
     } catch (err) {
+        console.error("🚨 Order Creation Error:", err.message);
         res.status(500).json({ error: "Server error" });
     }
 });
+
 
 
 
@@ -121,7 +126,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @route GET /api/orders/myorders
 // @access Private
 const getMyOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user._id });
+    const orders = await Order.find({ user: req.user._id })
     res.status(200).json(orders)
 });
 
@@ -264,13 +269,17 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 
-// @desc Get all orders
+// @desc Get all orders (sorted by newest first)
 // @route GET /api/orders
 // @access Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({}).populate('user', 'id name');
+    const orders = await Order.find({})
+        .sort({ createdAt: -1 })  
+        .populate('user', 'id name');  
+
     res.status(200).json(orders);
 });
+
 
 
 

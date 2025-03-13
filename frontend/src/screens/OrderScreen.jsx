@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector} from 'react-redux';
 import Message from '../components/Message';
@@ -11,15 +11,14 @@ import ApplyCoupon from '../components/ApplyCoupon';
 import { useStripePromise } from '../contexts/StripeContext';
 import { useGetOrderDetailsQuery, useCreatePaymentIntentMutation, useDeliverOrderMutation } from '../slices/ordersApiSlice';
 import RedeemPoints from '../components/RedeemPoints';
-import { setOrderValues, finalizeOrder, setOrderId } from "../slices/orderSlice";
+import { setOrderValues, finalizeOrder,  } from "../slices/orderSlice";
 
 
 const OrderScreen = () => {
 
   const [clientSecret, setClientSecret] = useState('');
   
-  // Selector to get orderId and orderPricesfrom Redux
-  const orderId = useSelector((state) => state.order.orderId);
+  const { id: orderId } = useParams(); //  Get orderId directly from the URL
   const orderPrices = useSelector((state) => state.order.orderPrices);
 
   const [hasPaid, setHasPaid] = useState(false);
@@ -29,7 +28,9 @@ const OrderScreen = () => {
 
 
   const stripePromise = useStripePromise()
-  const { data: order, refetch, isError, isLoading } = useGetOrderDetailsQuery(orderId);
+  const { data: order, refetch, isError, isLoading } = useGetOrderDetailsQuery(orderId, {
+    skip: !orderId, //  Prevents API call if orderId is missing
+  });
   const [createPaymentIntent] = useCreatePaymentIntentMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const [deliverOrder, {isLoading: loadingDeliver }] = 
@@ -40,19 +41,6 @@ const OrderScreen = () => {
     setPaymentDate(new Date().toISOString());
   };
 
-
-  useEffect(() => {
-    if (!orderId) {
-        // If orderId is not in Redux state, retrieve it from localStorage
-        const storedOrderId = localStorage.getItem('orderId');
-        if (storedOrderId) {
-            dispatch(setOrderId(storedOrderId));
-        } else {
-            toast.error('Order ID not found. Redirecting to home.');
-            navigate('/');
-        }
-    }
-  }, [orderId, dispatch, navigate]);
 
 
   useEffect(() => {
@@ -126,14 +114,22 @@ const OrderScreen = () => {
                     <p>
                         <strong>Email:</strong> {order.user.email}
                     </p>
+                {/* ✅ Fix: Check if deliveryAddress exists before accessing it */}
+                {order.orderType === "delivery" && order.deliveryAddress ? (
                     <p>
                         <strong>Address:</strong> {order.deliveryAddress.address}
                     </p>
-                    {order.isDelivered ? (
-                        <Message variant="success">Delivered on {order.deliveredAt}</Message>
-                    ) : (
-                        <Message variant="danger">Not Delivered </Message>
-                    )}
+                ) : (
+                    <p>
+                        <strong>Pickup Order</strong> - No delivery address required.
+                    </p>
+                )}
+
+                {order.isDelivered ? (
+                    <Message variant="success">Delivered on {order.deliveredAt}</Message>
+                ) : (
+                    <Message variant="danger">Not Delivered </Message>
+                )}
                 </ListGroup.Item>
 
                 <RedeemPoints />

@@ -44,20 +44,19 @@ const PlaceOrderScreens = () => {
         deliveryPrice: cart.deliveryPrice,
         phoneNumber: cart.phoneNumber || "",
         taxPrice: cart.taxPrice,
-        totalPrice: cart.totalPrice
     });
 
 
 
       const res = await createOrder({
         orderItems: cart.cartItems,
-        deliveryAddress: cart.deliveryAddress,
+        orderType: cart.orderType,  // 🚀 Ensure orderType is sent
+        deliveryAddress: cart.orderType === "delivery" ? cart.deliveryAddress : undefined,
         paymentMethod: cart.paymentMethod,
         itemsPrice: cart.itemsPrice,
-        deliveryPrice: cart.deliveryPrice,
+        deliveryPrice: cart.orderType === "pickup" ? 0 : cart.deliveryPrice,
         phoneNumber: cart.phoneNumber || "",
         taxPrice: cart.taxPrice,
-        totalPrice: cart.totalPrice
       }).unwrap();
       
       
@@ -152,24 +151,24 @@ const PlaceOrderScreens = () => {
                 <Col>SEK{cart.itemsPrice}</Col>
               </Row>
             </ListGroup.Item>
-            <ListGroup.Item>
+            {/* <ListGroup.Item>
               <Row>
                 <Col>Delivery:</Col>
                 <Col>SEK{cart.deliveryPrice}</Col>
               </Row>
-            </ListGroup.Item>
+            </ListGroup.Item> */}
             <ListGroup.Item>
               <Row>
                 <Col>Tax:</Col>
                 <Col>SEK{cart.taxPrice}</Col>
               </Row>
             </ListGroup.Item>
-            <ListGroup.Item>
+            {/* <ListGroup.Item>
               <Row>
                 <Col><strong>Total</strong></Col>
                 <Col>SEK{cart.totalPrice}</Col>
               </Row>
-            </ListGroup.Item>
+            </ListGroup.Item> */}
 
             <ListGroup.Item>
               {error && <Message variant='danger'>{error.data ? error.data.message : "An error occurred"}</Message>}

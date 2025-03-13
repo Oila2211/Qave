@@ -40,6 +40,7 @@ import RegionEditScreen from './screens/admin/RegionPriceEditScreen';
 import RegionListScreen from './screens/admin/RegionListScreen';
 import ContactScreen from './screens/ContactScreen';
 import AboutScreen from './screens/AboutScreen';
+import ResetOldUserScreen from './screens/ResetOldUser';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
       <Route path='/reset-password' element={<ResetPasswordScreen />} />
       <Route path='/contact-us' element={<ContactScreen />} />
       <Route path='/about-us' element={<AboutScreen />} />
+      <Route path='/reset-old-user' element={<ResetOldUserScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/delivery' element={<DeliveryScreen />} />
@@ -87,13 +89,13 @@ const router = createBrowserRouter(
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.StrictMode>
+  /* <React.StrictMode> */
     <Provider store={store}>
       <StripeProvider>
         <RouterProvider router={router} />
       </StripeProvider>
     </Provider>
-  // </React.StrictMode> 
+  /* </React.StrictMode>   */
 );
 
 
