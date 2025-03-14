@@ -41,6 +41,7 @@ import RegionListScreen from './screens/admin/RegionListScreen';
 import ContactScreen from './screens/ContactScreen';
 import AboutScreen from './screens/AboutScreen';
 import ResetOldUserScreen from './screens/ResetOldUser';
+import MenuScreen from './screens/MenuScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,6 +58,7 @@ const router = createBrowserRouter(
       <Route path='/reset-password' element={<ResetPasswordScreen />} />
       <Route path='/contact-us' element={<ContactScreen />} />
       <Route path='/about-us' element={<AboutScreen />} />
+      <Route path='/menu' element={<MenuScreen />} />
       <Route path='/reset-old-user' element={<ResetOldUserScreen />} />
 
       <Route path='' element={<PrivateRoute />}>

@@ -162,7 +162,9 @@ const createStripePaymentIntent = asyncHandler(async (req, res) => {
     }
 
     // Step 2: Calculate the total amount from the retrieved order's items
-    const totalAmount = order.orderItems.reduce((acc, item) => acc + (item.price * 100), 0); // Multiply by 100 to convert to cents
+    const totalAmount = Math.round(
+        (parseFloat(order.itemsPrice) + parseFloat(order.taxPrice) + parseFloat(order.deliveryPrice)) * 100
+    );
 
     // Step 3: Create the payment intent
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

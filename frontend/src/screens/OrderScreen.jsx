@@ -46,7 +46,7 @@ const OrderScreen = () => {
   useEffect(() => {
     console.log("my stripe promise is:", stripePromise)
     if (order && !order.isPaid) {
-      createPaymentIntent({ amount: order.totalPrice * 100 })
+      createPaymentIntent({ amount: Math.round(order.totalPrice * 100) })
         .unwrap()
         .then((data) => {
           setClientSecret(data.clientSecret);

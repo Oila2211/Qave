@@ -1,0 +1,98 @@
+/* General Styling */
+.menu-container {
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  /* Title */
+  .menu-title {
+    font-family: "Poppins", sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffcc66;
+    margin-bottom: 30px;
+  }
+  
+  /* Menu Groups */
+  .menu-groups {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .menu-group-btn {
+    background: #7c5947;
+    border: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .menu-group-btn:hover {
+    background: #ffcc66;
+    color: black;
+  }
+  
+  /* Section Titles */
+  .menu-group-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffcc66;
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  /* Food List (Now Responsive) */
+  .menu-list {
+    padding: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* Menu Item */
+  .menu-item-container {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 15px;
+  }
+  
+  .menu-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .menu-item-details {
+    flex-grow: 1;
+    text-align: left;
+  }
+  
+  /* Food Name */
+  .menu-food-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffcc66;
+  }
+  
+  /* Price */
+  .menu-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff8800;
+  }
+  
+  /* See More */
+  .see-more {
+    color: #ff8800;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  

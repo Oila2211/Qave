@@ -50,12 +50,12 @@ const Header = () => {
                  Order
             </Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/Menu'>
+            <LinkContainer to='/menu'>
             <Nav.Link className="fs-5">
                 Menu
             </Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/Catering'>
+            <LinkContainer to='/catering'>
             <Nav.Link className="fs-5">
                 Catering
             </Nav.Link>

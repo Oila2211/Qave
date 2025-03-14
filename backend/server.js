@@ -12,15 +12,14 @@ import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import couponRoutes from './routes/couponRoutes.js';
 import regionRoutes from './routes/regionRoutes.js';
-import Stripe from "stripe";
+import contactRoutes from './routes/contactRoutes.js';
+import webhookRoutes from "./routes/webhookRoutes.js";
+
 
 dotenv.config()
-if (!process.env.PORT || !process.env.STRIPE_SECRET_KEY) {
-    throw new Error("Essential environment variables are missing. Ensure PORT and STRIPE_SECRET_KEY are set.");
-}
+
 
 const port = process.env.PORT;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 connectDB(); //connect to MongoDB
@@ -46,9 +45,7 @@ app.use(cookieParser());
 
 app.use(cors({ credentials: true,origin: ['http://localhost:3000', 'https://checkout-cookies.stripe.com'] }));
 
-// app.get('/', (req, res) => {
-//     res.send('API is running...')
-// })
+
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
@@ -56,9 +53,9 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/region', regionRoutes);
 app.use('/api/coupon', couponRoutes);
+app.use('/api/contact-us', contactRoutes);
+app.use('/api/webhook', webhookRoutes);
 
-// const __dirname = path.resolve(); //Set __dirname to current directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 if (process.env.NODE_ENV === 'production') {
