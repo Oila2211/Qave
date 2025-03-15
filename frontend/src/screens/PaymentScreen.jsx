@@ -1,84 +1,82 @@
-// import { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { Form, Button, Col} from 'react-bootstrap'
-// import FormContainer from "../components/FormContainer";
-// import CheckoutSteps from "../components/CheckoutSteps";
-// import { savePaymentMethod } from "../slices/cartSlice";
+import React, { useEffect } from 'react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { updateUserInfoAfterPayment } from '../slices/authSlice';
+import { useGetOrderDetailsQuery, usePayOrderMutation } from '../slices/ordersApiSlice';
+import { resetOrderValues } from '../slices/orderSlice';
+import { toast } from 'react-toastify';
+import { useStripePromise } from '../contexts/StripeContext';
 
-// const PaymentScreen = () => {
-//     const navigate = useNavigate();
-//     const cart = useSelector((state) => state.cart);
-//     const { deliveryAddress } = cart;
+const PaymentSuccess = () => {
 
-//     useEffect(() => {
-//         if (!deliveryAddress) {
-//             navigate('/delivery');
-//         }
-//     }, [deliveryAddress, navigate])
+    const orderId = useSelector((state) => state.order.orderId);  // Use Redux state for orderId
+    const dispatch = useDispatch();
+    
+    const { data: order, refetch, isError, isLoading } = useGetOrderDetailsQuery(orderId);
+    const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+    const stripe = useStripePromise()
 
-//     const [paymentMethod, setPaymentMethod] = useState('Stripe')
+    useEffect(() => {
+        
+        if (!stripe) return;
 
-//     const dispatch = useDispatch();
+        const url = new URL(window.location);
+        const clientSecret = url.searchParams.get('payment_intent_client_secret');
+        const fetchPaymentIntent = async () => {
+          const { paymentIntent, error: retrieveError } = await stripe.retrievePaymentIntent(clientSecret);
+            
+          if (retrieveError) {
+              toast.error(`Error retrieving payment details: ${retrieveError.message}`);
+              return;
+            };   
+          
+              const details = {
+                  id: paymentIntent.id,
+                  status: paymentIntent.status,
+                  update_time: new Date().toISOString(),
+                  email_address: paymentIntent.receipt_email,
+              };
+              
+              await payOrder({ orderId, details});
+              // markAsPaid(orderId)
+              toast.success('Order is Paid')
 
-//     const submitHandler = (e) => {
-//         e.preventDefault();
-//         dispatch(savePaymentMethod(paymentMethod));
-//         navigate('/placeorder')
-//     }
+              // Reset orderId after successful payment
+              dispatch(resetOrderValues());
+              // dispatch(resetOrderId())
+          } 
+          refetch()
+    
+        fetchPaymentIntent();
+        
+    }, [stripe, payOrder, refetch, orderId, dispatch]);
 
+      
 
+  return (
+    <Container>
+      <Row className="justify-content-md-center mt-5">
+        <Col xs={12} md={6}>
+          <Card>
+            <Card.Body>
+              <Card.Title className="text-center">
+                <h2>Payment Successful!</h2>
+              </Card.Title>
+              <Card.Text className="text-center">
+                Your payment has been successfully processed.
+              </Card.Text>
+              <div className="d-flex justify-content-center">
+                <Link to="/">
+                  <Button variant="primary">Go to Home</Button>
+                </Link>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
-//   return (
-//     <FormContainer>
-//         <CheckoutSteps step1 step2 step3/>
-//         <h1>Payment Method</h1>
-//         <Form onSubmit={ submitHandler }>
-//             <Form.Group>
-//                 <Form.Label as='legend'>Select Method</Form.Label>
-//                 <Col>
-//                     <Form.Check
-//                     type="radio"
-//                     className="my-2"
-//                     label='Stripe (Credit Card)'
-//                     id="Stripe"
-//                     name="paymentMethod"
-//                     value='Stripe'
-//                     checked={paymentMethod === 'Stripe'}
-//                     onChange={(e) => setPaymentMethod(e.target.value)}
-//                     ></Form.Check>
-
-//                     <Form.Check
-//                     type="radio"
-//                     className="my-2"
-//                     label='Klarna'
-//                     id="Klarna"
-//                     name="paymentMethod"
-//                     value='Klarna'
-//                     checked={paymentMethod === 'Klarna'}
-//                     onChange={(e) => setPaymentMethod(e.target.value)}
-//                     ></Form.Check>
-
-//                     <Form.Check
-//                     type="radio"
-//                     className="my-2"
-//                     label='Swish'
-//                     id="Swish"
-//                     name="paymentMethod"
-//                     value='Swish'
-//                     checked={paymentMethod === 'Swish'}
-//                     onChange={(e) => setPaymentMethod(e.target.value)}
-//                     ></Form.Check>
-
-//                 </Col>
-//             </Form.Group>
-
-//             <Button type="submit" variant="primary">
-//                 Continue
-//             </Button>
-//         </Form>
-//     </FormContainer>
-//   )
-// }
-
-// export default PaymentScreen
+export default PaymentSuccess;

@@ -462,7 +462,7 @@ const MenuScreen = () => {
       {/* Menu Sections */}
       {menuGroups.map((group) => (
         <div key={group.id} ref={(el) => (sectionRefs.current[group.id] = el)} className="menu-section">
-          <h2 className="menu-group-title">{group.name}</h2>
+          <h4 className="menu-group-title">{group.name}</h4>
 
           <Row className="menu-list">
             {menuItems[group.id]?.map((item) => (
@@ -470,7 +470,7 @@ const MenuScreen = () => {
                 <div className="menu-item-container">
                   <img src={item.image} alt={item.name} className="menu-img" />
                   <div className="menu-item-details">
-                    <h3 className="menu-food-name">{item.name}</h3>
+                    <h6 className="menu-food-name">{item.name}</h6>
                     <p className="menu-price">{item.price}</p>
                     <p className="menu-desc">
                       {expanded[item.id] ? item.fullDesc : `${item.shortDesc} `}

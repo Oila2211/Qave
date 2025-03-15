@@ -45,6 +45,15 @@
     text-align: center;
     margin-top: 40px;
   }
+
+  /* Group Container */
+.menu-section {
+    background: #4b3023;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+  }
   
   /* Food List (Now Responsive) */
   .menu-list {
@@ -58,7 +67,6 @@
   .menu-item-container {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #ccc;
     padding: 15px;
   }
   

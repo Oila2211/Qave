@@ -148,8 +148,6 @@ const getOrderById = asyncHandler(async (req, res) => {
 
 
 
-
-
 // @desc Create Stripe Payment Intent
 // @route POST /api/config/stripe
 // @access Private
@@ -185,6 +183,8 @@ const createStripePaymentIntent = asyncHandler(async (req, res) => {
         res.status(400).send({ error: `Stripe payment intent failed: ${error.message}` });
     }
 });
+
+
 
 
 

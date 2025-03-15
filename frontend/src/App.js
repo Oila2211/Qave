@@ -79,6 +79,11 @@ const App = () => {
           backgroundColor: '#7C5947', // Custom background for /contact-us
           containerProps: { fluid: true }, // Fluid container for /contact-us
         };
+      case '/menu':
+        return {
+          backgroundColor: '#7c5947', // Custom background for /contact-us
+          containerProps: { fluid: false }, // Fluid container for /contact-us
+        };
       default:
         return {
           backgroundColor: '#fff', // Default background color (white)

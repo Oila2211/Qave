@@ -79,6 +79,7 @@ const PaymentElementScreen = ({ clientSecret ,markAsPaid }) => {
       clientSecret,
       confirmParams: {
         return_url: `${window.location.origin}/payment-success/${orderId}`,
+        
       },
       redirect: 'if_required'
     });

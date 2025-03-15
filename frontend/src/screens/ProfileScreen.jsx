@@ -17,7 +17,6 @@ const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const { userInfo } = useSelector((state) => state.auth)
-  // const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updateProfile, {isLoading: loadingUpdateProfile}] = useProfileMutation();
